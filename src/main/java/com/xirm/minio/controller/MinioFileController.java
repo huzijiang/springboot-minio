@@ -1,10 +1,13 @@
 package com.xirm.minio.controller;
 
+import com.xirm.minio.domain.bean.SimpleMachineDevice;
+import com.xirm.minio.service.DataService;
 import com.xirm.minio.util.ResponseData;
 import com.xirm.minio.util.ResponseDataUtil;
 import io.minio.*;
 import io.minio.http.Method;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +32,9 @@ import java.util.Map;
 public class MinioFileController {
 
 
+    @Autowired
+    DataService dataService;
+
     /**
      * 下载文件
      * @param filename
@@ -36,7 +42,8 @@ public class MinioFileController {
      */
     @GetMapping("/download/{filename}")
     public void download(@PathVariable String filename, HttpServletResponse response){
-
+        List<SimpleMachineDevice> simpleMachineDevices=dataService.selectMachineDeviceIds();
+        System.out.println(simpleMachineDevices.size());
     }
 
 

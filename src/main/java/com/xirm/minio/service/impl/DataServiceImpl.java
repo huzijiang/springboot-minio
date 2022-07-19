@@ -1,29 +1,37 @@
 package com.xirm.minio.service.impl;
 
-import com.xirm.minio.service.LongyuanDataService;
+import com.xirm.minio.domain.bean.SimpleMachineDevice;
+import com.xirm.minio.mapper.MachineDeviceMapper;
+import com.xirm.minio.service.DataService;
 import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.StatObjectArgs;
 import io.minio.StatObjectResponse;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.*;
-import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * @author huzj
  * @version 1.0
  * @date 2022/7/19 11:11
  */
-public class LongyuanDataServiceImpl  implements LongyuanDataService {
+@Service
+public class DataServiceImpl  implements DataService {
 
     @Resource
     private MinioClient minioClient;
 
     @Value("${minio.bucketName}")
     private String bucketName;
+
+    @Autowired
+    private MachineDeviceMapper machineDeviceMapper;
+
 
     @Override
     public void download(String minnioFileName,String saveFileName) {
@@ -41,7 +49,6 @@ public class LongyuanDataServiceImpl  implements LongyuanDataService {
 
             //文件下载
             in = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(minnioFileName).build());
-
 
             //文件存储
             BufferedOutputStream out=null;
@@ -67,6 +74,20 @@ public class LongyuanDataServiceImpl  implements LongyuanDataService {
                 }
             }
         }
+    }
+
+    /**
+     *
+     * 查询 所有需要同属的 传感器设备信息
+     *
+     *
+     */
+    @Override
+    public List<SimpleMachineDevice> selectMachineDeviceIds() {
+
+        List<SimpleMachineDevice> longs=machineDeviceMapper.selectMachineDeviceIds();
+
+        return longs;
     }
 
 

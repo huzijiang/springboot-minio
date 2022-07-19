@@ -12,5 +12,10 @@ public class SimpleMachineDevice {
 
     private Long deviceId;
 
+    /**
+     * 完整的设备名称
+     */
+    private String fullDeviceName;
+
 
 }

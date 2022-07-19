@@ -20,6 +20,14 @@
     <result column="warning_level" jdbcType="VARCHAR" property="warningLevel" />
     <result column="status_update_at" jdbcType="BIGINT" property="statusUpdateAt" />
   </resultMap>
+
+  <resultMap id="SimpleResultMap" type="com.xirm.minio.domain.bean.SimpleMachineDevice">
+    <!--@mbg.generated-->
+    <!--@Table machine_device-->
+    <id column="device_id" jdbcType="BIGINT" property="deviceId" />
+    <result column="full_device_name" jdbcType="VARCHAR" property="fullDeviceName" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     device_id, created_at, updated_at, device_name, device_no, device_type_id, machine_id,
@@ -220,4 +228,23 @@
     where device_id = #{deviceId,jdbcType=BIGINT}
   </update>
 
+  <select id="selectMachineDeviceIds" resultMap="SimpleResultMap">
+     SELECT
+            md.device_id AS device_id,
+            CONCAT(h3.name,'_',h2.name,'-',h1.name,'_','',md.device_name,'_51200_',md.device_id)  AS full_device_name
+     FROM machine_device md
+     LEFT JOIN hierarchy h1 on h1.id=md.machine_id
+     LEFT JOIN hierarchy h2 on h2.id=h1.parent_hierarchy_entity_id
+     LEFT JOIN hierarchy h3 on h3.id=h2.parent_hierarchy_entity_id
+     LEFT JOIN hierarchy h4 on h4.id=h3.parent_hierarchy_entity_id
+     LEFT JOIN device_type dt  ON dt.id=md.device_type_id
+     WHERE h1.type='MACHINE'
+        AND h2.`type` ='WORKSHOP'
+        AND h3.`type` ='FACTORY'
+        AND h4.`type` ='PROJECT'
+        AND h2.deleted=0
+        AND h3.deleted=0
+        AND h4.deleted=0
+        ANd dt.category=3
+  </select>
 </mapper>
