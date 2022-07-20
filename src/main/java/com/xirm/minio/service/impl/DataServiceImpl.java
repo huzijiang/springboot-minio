@@ -13,6 +13,7 @@ import io.minio.StatObjectResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,11 +40,14 @@ public class DataServiceImpl  implements DataService {
 
     /**
      *
+     * minio  文件下载
+     *
      * @param bucketName
      * @param fileName
      * @param saveFileName
      */
     @Override
+    @Async("downLoadFileTaskExecutor")
     public void download(String bucketName,String fileName,String saveFileName) {
         InputStream in = null;
         try {
@@ -83,7 +87,7 @@ public class DataServiceImpl  implements DataService {
 
     /**
      *
-     * 查询 所有需要同属的 传感器设备信息
+     * mysql查询 所有需要同属的 传感器设备信息
      *
      *
      */
@@ -96,7 +100,7 @@ public class DataServiceImpl  implements DataService {
     }
     /**
      *
-     * 查询 所有需要同属的 传感器设备信息
+     * cassandra 查询 minio 文件目录
      *
      *
      */

@@ -15,11 +15,12 @@ import java.util.List;
 public interface  DataService {
 
     /**
-     * 自动 多线程下载数据
+     * 下载数据
      * @param bucketName 数据桶
      * @param fileName  文件名称
      * @param saveFileName  保存的文件名称
      */
+
     public void download(String bucketName,String fileName,String saveFileName);
 
 
