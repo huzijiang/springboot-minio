@@ -15,18 +15,18 @@ import java.util.List;
 public interface  DataService {
 
     /**
-     *  自动 多线程下载数据
-     * @param minnioFileName
-     * @param saveFileName
+     * 自动 多线程下载数据
+     * @param bucketName 数据桶
+     * @param fileName  文件名称
+     * @param saveFileName  保存的文件名称
      */
-    public void download(String minnioFileName,String saveFileName);
+    public void download(String bucketName,String fileName,String saveFileName);
 
 
     /**
      * 查询 所有需要同属的 传感器设备信息
      */
     public List<SimpleMachineDevice> selectMachineDeviceIds();
-
 
 
     /**

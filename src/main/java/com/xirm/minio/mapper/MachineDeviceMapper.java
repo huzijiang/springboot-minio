@@ -16,18 +16,6 @@ import java.util.List;
 @Mapper
 public interface MachineDeviceMapper {
 
-    int deleteByPrimaryKey(Long deviceId);
-
-    int insert(MachineDevice record);
-
-    int insertSelective(MachineDevice record);
-
-    MachineDevice selectByPrimaryKey(Long deviceId);
-
-    int updateByPrimaryKeySelective(MachineDevice record);
-
-    int updateByPrimaryKey(MachineDevice record);
-
     /**
      *  传感器设备列表
      * @return

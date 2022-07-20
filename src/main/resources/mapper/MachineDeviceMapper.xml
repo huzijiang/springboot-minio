@@ -24,6 +24,9 @@
   <resultMap id="SimpleResultMap" type="com.xirm.minio.domain.bean.SimpleMachineDevice">
     <!--@mbg.generated-->
     <!--@Table machine_device-->
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+    <result column="workshop_name" jdbcType="VARCHAR" property="workshopName" />
     <id column="device_id" jdbcType="BIGINT" property="deviceId" />
     <result column="full_device_name" jdbcType="VARCHAR" property="fullDeviceName" />
   </resultMap>
@@ -34,217 +37,27 @@
     metadata, parent_device_id, reason, `status`, alarm_level, fault_level, warning_level,
     status_update_at
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    <!--@mbg.generated-->
-    select
-    <include refid="Base_Column_List" />
-    from machine_device
-    where device_id = #{deviceId,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    <!--@mbg.generated-->
-    delete from machine_device
-    where device_id = #{deviceId,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.xirm.minio.domain.bean.MachineDevice">
-    <!--@mbg.generated-->
-    insert into machine_device (device_id, created_at, updated_at,
-      device_name, device_no, device_type_id,
-      machine_id, metadata, parent_device_id,
-      reason, `status`, alarm_level,
-      fault_level, warning_level, status_update_at
-      )
-    values (#{deviceId,jdbcType=BIGINT}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP},
-      #{deviceName,jdbcType=VARCHAR}, #{deviceNo,jdbcType=VARCHAR}, #{deviceTypeId,jdbcType=BIGINT},
-      #{machineId,jdbcType=BIGINT}, #{metadata,jdbcType=VARCHAR}, #{parentDeviceId,jdbcType=BIGINT},
-      #{reason,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{alarmLevel,jdbcType=VARCHAR},
-      #{faultLevel,jdbcType=VARCHAR}, #{warningLevel,jdbcType=VARCHAR}, #{statusUpdateAt,jdbcType=BIGINT}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.xirm.minio.domain.bean.MachineDevice">
-    <!--@mbg.generated-->
-    insert into machine_device
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="deviceId != null">
-        device_id,
-      </if>
-      <if test="createdAt != null">
-        created_at,
-      </if>
-      <if test="updatedAt != null">
-        updated_at,
-      </if>
-      <if test="deviceName != null">
-        device_name,
-      </if>
-      <if test="deviceNo != null">
-        device_no,
-      </if>
-      <if test="deviceTypeId != null">
-        device_type_id,
-      </if>
-      <if test="machineId != null">
-        machine_id,
-      </if>
-      <if test="metadata != null">
-        metadata,
-      </if>
-      <if test="parentDeviceId != null">
-        parent_device_id,
-      </if>
-      <if test="reason != null">
-        reason,
-      </if>
-      <if test="status != null">
-        `status`,
-      </if>
-      <if test="alarmLevel != null">
-        alarm_level,
-      </if>
-      <if test="faultLevel != null">
-        fault_level,
-      </if>
-      <if test="warningLevel != null">
-        warning_level,
-      </if>
-      <if test="statusUpdateAt != null">
-        status_update_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="deviceId != null">
-        #{deviceId,jdbcType=BIGINT},
-      </if>
-      <if test="createdAt != null">
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null">
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="deviceName != null">
-        #{deviceName,jdbcType=VARCHAR},
-      </if>
-      <if test="deviceNo != null">
-        #{deviceNo,jdbcType=VARCHAR},
-      </if>
-      <if test="deviceTypeId != null">
-        #{deviceTypeId,jdbcType=BIGINT},
-      </if>
-      <if test="machineId != null">
-        #{machineId,jdbcType=BIGINT},
-      </if>
-      <if test="metadata != null">
-        #{metadata,jdbcType=VARCHAR},
-      </if>
-      <if test="parentDeviceId != null">
-        #{parentDeviceId,jdbcType=BIGINT},
-      </if>
-      <if test="reason != null">
-        #{reason,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="alarmLevel != null">
-        #{alarmLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="faultLevel != null">
-        #{faultLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="warningLevel != null">
-        #{warningLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="statusUpdateAt != null">
-        #{statusUpdateAt,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.xirm.minio.domain.bean.MachineDevice">
-    <!--@mbg.generated-->
-    update machine_device
-    <set>
-      <if test="createdAt != null">
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null">
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="deviceName != null">
-        device_name = #{deviceName,jdbcType=VARCHAR},
-      </if>
-      <if test="deviceNo != null">
-        device_no = #{deviceNo,jdbcType=VARCHAR},
-      </if>
-      <if test="deviceTypeId != null">
-        device_type_id = #{deviceTypeId,jdbcType=BIGINT},
-      </if>
-      <if test="machineId != null">
-        machine_id = #{machineId,jdbcType=BIGINT},
-      </if>
-      <if test="metadata != null">
-        metadata = #{metadata,jdbcType=VARCHAR},
-      </if>
-      <if test="parentDeviceId != null">
-        parent_device_id = #{parentDeviceId,jdbcType=BIGINT},
-      </if>
-      <if test="reason != null">
-        reason = #{reason,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        `status` = #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="alarmLevel != null">
-        alarm_level = #{alarmLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="faultLevel != null">
-        fault_level = #{faultLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="warningLevel != null">
-        warning_level = #{warningLevel,jdbcType=VARCHAR},
-      </if>
-      <if test="statusUpdateAt != null">
-        status_update_at = #{statusUpdateAt,jdbcType=BIGINT},
-      </if>
-    </set>
-    where device_id = #{deviceId,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.xirm.minio.domain.bean.MachineDevice">
-    <!--@mbg.generated-->
-    update machine_device
-    set created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      device_name = #{deviceName,jdbcType=VARCHAR},
-      device_no = #{deviceNo,jdbcType=VARCHAR},
-      device_type_id = #{deviceTypeId,jdbcType=BIGINT},
-      machine_id = #{machineId,jdbcType=BIGINT},
-      metadata = #{metadata,jdbcType=VARCHAR},
-      parent_device_id = #{parentDeviceId,jdbcType=BIGINT},
-      reason = #{reason,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=VARCHAR},
-      alarm_level = #{alarmLevel,jdbcType=VARCHAR},
-      fault_level = #{faultLevel,jdbcType=VARCHAR},
-      warning_level = #{warningLevel,jdbcType=VARCHAR},
-      status_update_at = #{statusUpdateAt,jdbcType=BIGINT}
-    where device_id = #{deviceId,jdbcType=BIGINT}
-  </update>
 
   <select id="selectMachineDeviceIds" resultMap="SimpleResultMap">
-     SELECT
+    SELECT
+            '龙源电力集团' as project_name,
+            h3.`name` as factory_name,
+            h2.name as workshop_name,
             md.device_id AS device_id,
-            CONCAT(h3.name,'_',h2.name,'-',h1.name,'_','',md.device_name,'_51200_',md.device_id)  AS full_device_name
-     FROM machine_device md
-     LEFT JOIN hierarchy h1 on h1.id=md.machine_id
-     LEFT JOIN hierarchy h2 on h2.id=h1.parent_hierarchy_entity_id
-     LEFT JOIN hierarchy h3 on h3.id=h2.parent_hierarchy_entity_id
-     LEFT JOIN hierarchy h4 on h4.id=h3.parent_hierarchy_entity_id
-     LEFT JOIN device_type dt  ON dt.id=md.device_type_id
-     WHERE h1.type='MACHINE'
-        AND h2.`type` ='WORKSHOP'
-        AND h3.`type` ='FACTORY'
-        AND h4.`type` ='PROJECT'
-        AND h2.deleted=0
-        AND h3.deleted=0
-        AND h4.deleted=0
-        ANd dt.category=3
+            CONCAT(h3.name,'_',h3.id,'_',h2.name,'_',h2.id,'_',h1.name,'_',h1.id,'_','',md.device_name,'_',md.device_id,'_51200__',md.device_id)   AS full_device_name
+    FROM machine_device md
+                 LEFT JOIN hierarchy h1 on h1.id=md.machine_id
+                 LEFT JOIN hierarchy h2 on h2.id=h1.parent_hierarchy_entity_id
+                 LEFT JOIN hierarchy h3 on h3.id=h2.parent_hierarchy_entity_id
+                 LEFT JOIN hierarchy h4 on h4.id=h3.parent_hierarchy_entity_id
+                 LEFT JOIN device_type dt  ON dt.id=md.device_type_id
+    WHERE h1.type='MACHINE'
+      AND h2.`type` ='WORKSHOP'
+      AND h3.`type` ='FACTORY'
+      AND h4.`type` ='PROJECT'
+      AND h2.deleted=0
+      AND h3.deleted=0
+      AND h4.deleted=0
+      ANd dt.category=3
   </select>
 </mapper>

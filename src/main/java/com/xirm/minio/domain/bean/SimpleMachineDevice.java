@@ -10,10 +10,29 @@ import lombok.Data;
 @Data
 public class SimpleMachineDevice {
 
-    private Long deviceId;
+    /**
+     * 集团
+     */
+    private String projectName;
 
     /**
-     * 完整的设备名称
+     * 区域名称
+     */
+    private String factoryName;
+
+    /**
+     * 风场名称
+     */
+    private String workshopName;
+
+    /**
+     * 风机编号
+     */
+    private Long deviceId;
+
+
+    /**
+     * 风机名称-完整的设备名称，导出文件的文件名
      */
     private String fullDeviceName;
 

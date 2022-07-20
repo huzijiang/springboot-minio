@@ -31,52 +31,42 @@ public class DataServiceImpl  implements DataService {
     @Resource
     private MinioClient minioClient;
 
-    @Value("${minio.bucketName}")
-    private String bucketName;
-
     @Autowired
     private MachineDeviceMapper machineDeviceMapper;
 
     @Autowired
     private DeviceDataPointRepository deviceDataPointRepositoryImpl;
 
-
+    /**
+     *
+     * @param bucketName
+     * @param fileName
+     * @param saveFileName
+     */
     @Override
-    public void download(String minnioFileName,String saveFileName) {
+    public void download(String bucketName,String fileName,String saveFileName) {
         InputStream in = null;
         try {
-            //查询 mysql 获取 传感器的数据信息 并拼接
-            List<SimpleMachineDevice> simpleMachineDeviceList=null;
-
-            try{
-                simpleMachineDeviceList=machineDeviceMapper.selectMachineDeviceIds();
-            }catch (Exception e){
-                log.error(e.toString());
-                e.printStackTrace();
-                log.error("查询mysql 数据异常.");
-            }
-            //查询 cassandra， 解析获取文件名称  原始数据 identifier: originalData  逐个去minio 中下载
-
-
-
-
             //查询 获取对象信息
-            StatObjectResponse stat = minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(minnioFileName).build());
+            StatObjectResponse stat = minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(fileName).build());
+            System.out.println(stat.size());
+            if(stat.size()>0){
+                //文件下载
+                in = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(fileName).build());
 
-            //文件下载
-            in = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(minnioFileName).build());
-
-            //文件存储
-            BufferedOutputStream out=null;
-            out=new BufferedOutputStream(new FileOutputStream(saveFileName));
-            int len=-1;
-            byte[] b=new byte[1024];
-            while((len=in.read(b))!=-1){
-                out.write(b,0,len);
+                //文件存储
+                BufferedOutputStream out=null;
+                out=new BufferedOutputStream(new FileOutputStream(saveFileName));
+                int len=-1;
+                byte[] b=new byte[1024];
+                while((len=in.read(b))!=-1){
+                    out.write(b,0,len);
+                }
+                in.close();
+                out.close();
+            }else {
+                log.info("bucketName:{} fileName: {} 文件为空。",bucketName,fileName);
             }
-            in.close();
-            out.close();
-
         }catch (Exception e){
             e.printStackTrace();
             e.getMessage();
