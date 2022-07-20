@@ -6,6 +6,7 @@ import org.springframework.data.cassandra.core.mapping.Column;
 import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -19,7 +20,7 @@ import java.util.LinkedList;
 public class DeviceDataPoint {
     @PrimaryKeyColumn(name = "device_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
     @Column("device_id")
-    private Long deviceId;
+    private BigInteger deviceId;
 
     @PrimaryKeyColumn(name = "identifier", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
     @Column("identifier")

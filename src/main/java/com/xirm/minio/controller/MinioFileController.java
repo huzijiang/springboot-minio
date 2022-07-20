@@ -19,6 +19,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class MinioFileController {
         System.out.println(simpleMachineDevices.size());
         //
         DeviceDataPointCassandraParam deviceDataPointCassandraParam=new DeviceDataPointCassandraParam();
-        deviceDataPointCassandraParam.setDeviceId("724320072792936448");
+        deviceDataPointCassandraParam.setDeviceId(new BigInteger("724320072792936448"));
         deviceDataPointCassandraParam.setIdentifier("WaveformIndex");
         deviceDataPointCassandraParam.setBeginTime("2022-06-15 00:00:00.000");
         deviceDataPointCassandraParam.setEndTime("2022-06-15 23:59:59.000");

@@ -2,6 +2,8 @@ package com.xirm.minio.domain.bean;
 
 import lombok.Data;
 
+import java.math.BigInteger;
+
 /**
  *
  *
@@ -12,7 +14,7 @@ import lombok.Data;
 @Data
 public class DeviceDataPointCassandraParam {
 
-    public String deviceId;
+    public BigInteger deviceId;
 
     public String identifier;
 

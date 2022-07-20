@@ -32,8 +32,8 @@ public class DeviceDataPointRepositoryImpl extends BaseRepositoryImpl<DeviceData
         Query query = Query
                 .query(where("device_id").is(param.getDeviceId()))
                 .and(where("identifier").is(param.getIdentifier()))
-                .and(where("create_at").gt(param.beginTime))
-                .and(where("create_at").lt(param.endTime));
+                .and(where("created_at").gt(param.beginTime))
+                .and(where("created_at").lt(param.endTime));
 
         query = query.withAllowFiltering();
 
