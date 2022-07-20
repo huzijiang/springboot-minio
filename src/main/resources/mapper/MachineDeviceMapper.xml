@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xirm.minio.mapper.MachineDeviceMapper">
+
+  <resultMap id="SimpleResultMap" type="com.xirm.minio.domain.bean.SimpleMachineDevice">
+    <!--@mbg.generated-->
+    <!--@Table machine_device-->
+    <id column="device_id" jdbcType="BIGINT" property="deviceId" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+    <result column="workshop_name" jdbcType="VARCHAR" property="workshopName" />
+    <result column="full_device_name" jdbcType="VARCHAR" property="fullDeviceName" />
+  </resultMap>
+
   <resultMap id="BaseResultMap" type="com.xirm.minio.domain.bean.MachineDevice">
     <!--@mbg.generated-->
     <!--@Table machine_device-->
@@ -21,22 +32,8 @@
     <result column="status_update_at" jdbcType="BIGINT" property="statusUpdateAt" />
   </resultMap>
 
-  <resultMap id="SimpleResultMap" type="com.xirm.minio.domain.bean.SimpleMachineDevice">
-    <!--@mbg.generated-->
-    <!--@Table machine_device-->
-    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
-    <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
-    <result column="workshop_name" jdbcType="VARCHAR" property="workshopName" />
-    <id column="device_id" jdbcType="BIGINT" property="deviceId" />
-    <result column="full_device_name" jdbcType="VARCHAR" property="fullDeviceName" />
-  </resultMap>
 
-  <sql id="Base_Column_List">
-    <!--@mbg.generated-->
-    device_id, created_at, updated_at, device_name, device_no, device_type_id, machine_id,
-    metadata, parent_device_id, reason, `status`, alarm_level, fault_level, warning_level,
-    status_update_at
-  </sql>
+
 
   <select id="selectMachineDeviceIds" resultMap="SimpleResultMap">
     SELECT
@@ -60,4 +57,5 @@
       AND h4.deleted=0
       ANd dt.category=3
   </select>
+
 </mapper>
