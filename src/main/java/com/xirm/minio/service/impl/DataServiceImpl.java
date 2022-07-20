@@ -45,20 +45,18 @@ public class DataServiceImpl  implements DataService {
 
             try{
                 simpleMachineDeviceList=machineDeviceMapper.selectMachineDeviceIds();
-
             }catch (Exception e){
                 log.error(e.toString());
                 e.printStackTrace();
                 log.error("查询mysql 数据异常.");
             }
-            //查询 cassandra， 解析获取文件名称  原始数据 identifier: originalData
+            //查询 cassandra， 解析获取文件名称  原始数据 identifier: originalData  逐个去minio 中下载
 
 
 
 
             //查询 获取对象信息
-            StatObjectResponse stat = minioClient.statObject(
-                    StatObjectArgs.builder().bucket(bucketName).object(minnioFileName).build());
+            StatObjectResponse stat = minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(minnioFileName).build());
 
             //文件下载
             in = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(minnioFileName).build());
@@ -77,7 +75,6 @@ public class DataServiceImpl  implements DataService {
         }catch (Exception e){
             e.printStackTrace();
             e.getMessage();
-
         }finally {
             if(in != null){
                 try {
