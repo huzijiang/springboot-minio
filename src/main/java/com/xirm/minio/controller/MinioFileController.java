@@ -1,6 +1,8 @@
 package com.xirm.minio.controller;
 
+import com.xirm.minio.domain.bean.DeviceDataPointCassandraParam;
 import com.xirm.minio.domain.bean.SimpleMachineDevice;
+import com.xirm.minio.domain.device.DeviceDataPoint;
 import com.xirm.minio.service.DataService;
 import com.xirm.minio.util.ResponseData;
 import com.xirm.minio.util.ResponseDataUtil;
@@ -42,9 +44,27 @@ public class MinioFileController {
      */
     @GetMapping("/download/{filename}")
     public void download(@PathVariable String filename, HttpServletResponse response){
+        //ok
         List<SimpleMachineDevice> simpleMachineDevices=dataService.selectMachineDeviceIds();
         System.out.println(simpleMachineDevices.size());
+        //
+        DeviceDataPointCassandraParam deviceDataPointCassandraParam=new DeviceDataPointCassandraParam();
+        deviceDataPointCassandraParam.setDeviceId("724320072792936448");
+        deviceDataPointCassandraParam.setIdentifier("WaveformIndex");
+        deviceDataPointCassandraParam.setBeginTime("2022-06-15 00:00:00.000");
+        deviceDataPointCassandraParam.setEndTime("2022-06-15 23:59:59.000");
+
+        List<DeviceDataPoint> deviceDataPointList=dataService.selectCassandraDeviceMinioDataInfo(deviceDataPointCassandraParam);
+        System.out.println(deviceDataPointList);
+
+        //TODO createFile
+
+
+
+
     }
+
+
 
 
 

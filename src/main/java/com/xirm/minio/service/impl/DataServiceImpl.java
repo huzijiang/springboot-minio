@@ -1,6 +1,9 @@
 package com.xirm.minio.service.impl;
 
+import com.xirm.minio.cassandra.DeviceDataPointRepository;
+import com.xirm.minio.domain.bean.DeviceDataPointCassandraParam;
 import com.xirm.minio.domain.bean.SimpleMachineDevice;
+import com.xirm.minio.domain.device.DeviceDataPoint;
 import com.xirm.minio.mapper.MachineDeviceMapper;
 import com.xirm.minio.service.DataService;
 import io.minio.GetObjectArgs;
@@ -34,6 +37,8 @@ public class DataServiceImpl  implements DataService {
     @Autowired
     private MachineDeviceMapper machineDeviceMapper;
 
+    @Autowired
+    private DeviceDataPointRepository deviceDataPointRepositoryImpl;
 
 
     @Override
@@ -99,6 +104,16 @@ public class DataServiceImpl  implements DataService {
 
         return longs;
     }
+    /**
+     *
+     * 查询 所有需要同属的 传感器设备信息
+     *
+     *
+     */
+    @Override
+    public List<DeviceDataPoint> selectCassandraDeviceMinioDataInfo(DeviceDataPointCassandraParam deviceDataPointCassandraParam) {
 
+        return deviceDataPointRepositoryImpl.list(deviceDataPointCassandraParam);
+    }
 
 }

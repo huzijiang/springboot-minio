@@ -7,6 +7,8 @@ import com.xirm.minio.domain.device.DeviceDataPoint;
 import java.util.List;
 import org.springframework.data.cassandra.core.query.Columns;
 import org.springframework.data.cassandra.core.query.Query;
+import org.springframework.stereotype.Repository;
+
 import static org.springframework.data.cassandra.core.query.Criteria.where;
 
 
@@ -15,6 +17,7 @@ import static org.springframework.data.cassandra.core.query.Criteria.where;
  * @version 1.0
  * @date 2022/7/20 15:16
  */
+@Repository
 public class DeviceDataPointRepositoryImpl extends BaseRepositoryImpl<DeviceDataPoint> implements DeviceDataPointRepository {
 
 
@@ -34,7 +37,7 @@ public class DeviceDataPointRepositoryImpl extends BaseRepositoryImpl<DeviceData
 
         query = query.withAllowFiltering();
 
-        query = query.columns(Columns.from("vin", "gatime", "sstr", "rectime", "fwdtime", "ressts", "restime", "idcode", "msgtype"));
+        query = query.columns(Columns.from("device_id", "identifier", "created_at", "metadata"));
 
         System.out.println(query);
 
