@@ -30,7 +30,7 @@ public class DeviceDataPointRepositoryImpl extends BaseRepositoryImpl<DeviceData
     @Override
     public List<DeviceDataPoint> list(DeviceDataPointCassandraParam param) {
         Query query = Query
-                .query(where("device_code").is(param.getDeviceId()))
+                .query(where("device_id").is(param.getDeviceId()))
                 .and(where("identifier").is(param.getIdentifier()))
                 .and(where("create_at").gt(param.beginTime))
                 .and(where("create_at").lt(param.endTime));
