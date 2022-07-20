@@ -7,6 +7,7 @@ import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.StatObjectArgs;
 import io.minio.StatObjectResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.List;
  * @version 1.0
  * @date 2022/7/19 11:11
  */
+@Slf4j
 @Service
 public class DataServiceImpl  implements DataService {
 
@@ -33,14 +35,25 @@ public class DataServiceImpl  implements DataService {
     private MachineDeviceMapper machineDeviceMapper;
 
 
+
     @Override
     public void download(String minnioFileName,String saveFileName) {
         InputStream in = null;
         try {
             //查询 mysql 获取 传感器的数据信息 并拼接
+            List<SimpleMachineDevice> simpleMachineDeviceList=null;
+
+            try{
+                simpleMachineDeviceList=machineDeviceMapper.selectMachineDeviceIds();
+
+            }catch (Exception e){
+                log.error(e.toString());
+                e.printStackTrace();
+                log.error("查询mysql 数据异常.");
+            }
+            //查询 cassandra， 解析获取文件名称  原始数据 identifier: originalData
 
 
-            //查询 cassandra， 解析获取文件名称
 
 
             //查询 获取对象信息
