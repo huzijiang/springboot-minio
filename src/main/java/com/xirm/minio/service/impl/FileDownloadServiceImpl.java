@@ -2,10 +2,8 @@ package com.xirm.minio.service.impl;
 
 import com.xirm.minio.service.DataService;
 import com.xirm.minio.service.FileDownloadService;
-import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
-import io.minio.StatObjectArgs;
-import io.minio.StatObjectResponse;
+import io.minio.ObjectStat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -43,17 +41,12 @@ public class FileDownloadServiceImpl implements FileDownloadService {
         System.out.println("开始下载文件-bucketName: "+bucketName+" -saveFileLocation: "+saveFileLocation+""+" -fileName: "+fileName);
         InputStream in = null;
         try {
-            //获取对象信息
-            StatObjectResponse stat = minioClient.statObject(
-                    StatObjectArgs.builder().bucket(bucketName).object(fileName).build());
             //查询 获取对象信息
-//            ObjectStat stat = minioClient.statObject(bucketName,fileName);
-            System.out.println(stat.size());
-            if(stat.size()>0){
-                in = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(fileName).build());
-                //文件下载
-//                in = minioClient.getObject(bucketName,fileName);
+            ObjectStat stat = minioClient.statObject(bucketName,fileName);
 
+            if(stat.length()>0){
+                //文件下载
+                in = minioClient.getObject(bucketName,fileName);
                 //文件存储
                 BufferedOutputStream out=null;
                 out=new BufferedOutputStream(new FileOutputStream(saveFileLocation+fileName));
