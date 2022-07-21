@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2022/7/3 13:24
  */
 //@Configuration
-public class MinioConfigL {
+public class MinioConfigLow {
 
 //    @Value("${fileserver.minio.server.host}")
 //    private String host;
