@@ -2,6 +2,7 @@ package com.xirm.minio.service.impl;
 
 import com.xirm.minio.service.DataService;
 import com.xirm.minio.service.FileDownloadService;
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.ObjectStat;
 import lombok.extern.slf4j.Slf4j;
@@ -42,11 +43,12 @@ public class FileDownloadServiceImpl implements FileDownloadService {
         InputStream in = null;
         try {
             //查询 获取对象信息
-            ObjectStat stat = minioClient.statObject(bucketName,fileName);
-            System.out.println(stat.length());
-            if(stat.length()>0){
+//            ObjectStat stat = minioClient.statObject(bucketName,fileName);
+            System.out.println(stat.size());
+            if(stat.size()>0){
+                in = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(fileName).build());
                 //文件下载
-                in = minioClient.getObject(bucketName,fileName);
+//                in = minioClient.getObject(bucketName,fileName);
 
                 //文件存储
                 BufferedOutputStream out=null;
