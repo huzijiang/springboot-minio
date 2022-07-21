@@ -1,9 +1,14 @@
-
-minio:
-  endpoint: http://10.50.42.16:9000
-  accessKey: Fatri2019
-  secretKey: Fatri2019
-  bucketName: images
+# 低版本
+fileserver:
+  file-expired-time: 604800000
+  minio:
+    access-key: Fatri2019
+    secret-key: Fatri2019
+    region: cn-south-rack-1
+    server:
+      host: 10.50.42.16
+      secure: false
+      port: 9000
 
 spring:
   datasource:
@@ -12,18 +17,6 @@ spring:
     password: Fatri2021!@#
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-#  data:
-#    cassandra:
-#      keyspace-name: jarvis_datastore
-#      #entity-base-packages:
-#      contact-points: 10.50.42.16
-#      port: 9042
-#      cluster-name: cassandra_cluster
-#      username: cassandra
-#      password: cassandra
-#      local-datacenter: datacenter1
-#      connection:
-#        connect-timeout: 10
   data:
     cassandra:
       repositories:

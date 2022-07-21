@@ -6,10 +6,8 @@ import com.xirm.minio.domain.bean.SimpleMachineDevice;
 import com.xirm.minio.domain.device.DeviceDataPoint;
 import com.xirm.minio.mapper.MachineDeviceMapper;
 import com.xirm.minio.service.DataService;
-import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
-import io.minio.StatObjectArgs;
-import io.minio.StatObjectResponse;
+import io.minio.ObjectStat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,11 +54,11 @@ public class DataServiceImpl  implements DataService {
         InputStream in = null;
         try {
             //查询 获取对象信息
-            StatObjectResponse stat = minioClient.statObject(StatObjectArgs.builder().bucket(bucketName).object(fileName).build());
-            System.out.println(stat.size());
-            if(stat.size()>0){
+            ObjectStat stat = minioClient.statObject(bucketName,fileName);
+            System.out.println(stat.length());
+            if(stat.length()>0){
                 //文件下载
-                in = minioClient.getObject(GetObjectArgs.builder().bucket(bucketName).object(fileName).build());
+                in = minioClient.getObject(bucketName,fileName);
 
                 //文件存储
                 BufferedOutputStream out=null;
@@ -102,7 +100,7 @@ public class DataServiceImpl  implements DataService {
         log.info("开始查询 mysql ");
         System.out.println("开始查询 mysql");
         List<SimpleMachineDevice> simpleMachineDeviceList=machineDeviceMapper.selectMachineDeviceIds();
-        log.info("结束查询 mysql: 共有数据 {} 条"+simpleMachineDeviceList.size());
+        log.info("结束查询 mysql: 共有数据 {} 条",simpleMachineDeviceList.size());
         System.out.println("结束查询 mysql: 共有数据 +"+simpleMachineDeviceList.size()+"+ 条");
         return simpleMachineDeviceList;
     }
