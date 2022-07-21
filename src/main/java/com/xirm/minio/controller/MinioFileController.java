@@ -15,6 +15,7 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +29,8 @@ import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author huzj
@@ -37,6 +40,8 @@ import java.util.*;
 @RestController
 public class MinioFileController {
 
+    @Autowired
+    private Executor personInfoTaskExecutor;
 
     @Autowired
     FileDownloadService fileDownloadService;
@@ -49,7 +54,7 @@ public class MinioFileController {
     SimpleDateFormat sdfall= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
 
-    public static String rootpath="d:";
+    public static String rootpath="/Users/huzj/Desktop/test";
     /**
      * 下载文件， 从本月1 日 算起 开始下载
      * @param filename
@@ -73,7 +78,7 @@ public class MinioFileController {
             asimpleMachineDevice.setProjectName("龙源集团");
             asimpleMachineDevice.setFactoryName("区域名字");
             asimpleMachineDevice.setWorkshopName("风场名字");
-            asimpleMachineDevice.setFullDeviceName("asdaasdad");
+            asimpleMachineDevice.setFullDeviceName("A-0-01-10");
         simpleMachineDevices.add(asimpleMachineDevice);
 
 
@@ -122,6 +127,31 @@ public class MinioFileController {
             }
         }
 
+    }
+
+    /**
+     * 监控线程池状态
+     * @return
+     */
+    @GetMapping("/asyncExceutorInfo")
+    public Map getThreadInfo() {
+        Map map =new HashMap();
+        Object[] myThread = {personInfoTaskExecutor};
+        for (Object thread : myThread) {
+            ThreadPoolTaskExecutor threadTask = (ThreadPoolTaskExecutor) thread;
+            ThreadPoolExecutor threadPoolExecutor =threadTask.getThreadPoolExecutor();
+            System.out.println("提交任务数"+threadPoolExecutor.getTaskCount());
+            System.out.println("完成任务数"+threadPoolExecutor.getCompletedTaskCount() );
+            System.out.println("当前有"+threadPoolExecutor.getActiveCount()+"个线程正在处理任务");
+            System.out.println("还剩"+threadPoolExecutor.getQueue().size()+"个任务");
+            map.put("提交任务数-->",threadPoolExecutor.getTaskCount());
+            map.put("完成任务数-->",threadPoolExecutor.getCompletedTaskCount());
+            map.put("当前有多少线程正在处理任务-->",threadPoolExecutor.getActiveCount());
+            map.put("还剩多少个任务未执行-->",threadPoolExecutor.getQueue().size());
+            map.put("当前可用队列长度-->",threadPoolExecutor.getQueue().remainingCapacity());
+            map.put("当前时间-->", new Date().toString());
+        }
+        return map;
     }
 
 
