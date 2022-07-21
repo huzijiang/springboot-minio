@@ -1,24 +1,26 @@
+
+minio:
+  endpoint: http://10.50.42.16:9000
+  accessKey: Fatri2019
+  secretKey: Fatri2019
+  bucketName: images
+
 spring:
   datasource:
-    url: jdbc:mysql://47.118.51.155:3306/spring_tansiactional?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
-    username: rtuser
-    password: gs@2022#
+    url: jdbc:mysql://10.50.42.16:3306/cms_longyuan_group?useSSL=false&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true
+    username: root
+    password: Fatri2021!@#
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
     cassandra:
       keyspace-name: jarvis_datastore
       #entity-base-packages:
-      contact-points: 172.28.2.206
+      contact-points: 10.50.42.16
       port: 9042
       cluster-name: cassandra_cluster
-      username: root
-      password: roots
+      username: cassandra
+      password: cassandra
       local-datacenter: datacenter1
-
-minio:
-  endpoint: http://47.118.51.155:9000
-  accessKey: miniorootuser
-  secretKey: miniorootpassword
-  bucketName: images
-
+      connection:
+        connect-timeout: 10
