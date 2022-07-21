@@ -3,6 +3,7 @@ package com.xirm.minio.domain.bean;
 import lombok.Data;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 /**
  *
@@ -18,8 +19,8 @@ public class DeviceDataPointCassandraParam {
 
     public String identifier;
 
-    public String beginTime;
+    public Date beginTime;
 
-    public String endTime;
+    public Date endTime;
 
 }

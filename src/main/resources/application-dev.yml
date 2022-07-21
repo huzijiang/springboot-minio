@@ -13,7 +13,7 @@ fileserver:
     secret-key: Fatri2019
     region: cn-south-rack-1
     server:
-      host: 172.28.2.206
+      host: 47.118.51.155
       secure: false
       port: 9000
 
