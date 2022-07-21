@@ -80,7 +80,6 @@ public class MinioFileController {
             for (DeviceDataPoint deviceDataPoint:deviceDataPointList) {
                 DeviceDataPointMetaData deviceDataPointMetaData=gson.fromJson(deviceDataPoint.getMetadata(),DeviceDataPointMetaData.class);
 
-
                 //直接到文件
                 File fileFactoryName=new File(rootpath.concat(simpleMachineDevice.getProjectName()).concat(sdfroot.format(calendar.getTime()))
                         .concat(File.separator)

@@ -17,7 +17,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.awt.*;
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.List;
 
 /**
@@ -49,6 +51,8 @@ public class DataServiceImpl  implements DataService {
     @Override
     @Async("downLoadFileTaskExecutor")
     public void download(String bucketName,String fileName,String saveFileName) {
+        log.info("开始下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,fileName,saveFileName);
+        System.out.println("开始下载文件-bucketName: "+bucketName+" -fileName: "+fileName+" -saveFileName: "+saveFileName+"");
         InputStream in = null;
         try {
             //查询 获取对象信息
@@ -83,6 +87,8 @@ public class DataServiceImpl  implements DataService {
                 }
             }
         }
+        log.info("结束下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,fileName,saveFileName);
+        System.out.println("结束下载文件-bucketName: "+bucketName+" -fileName: "+fileName+" -saveFileName: "+saveFileName+"");
     }
 
     /**
@@ -93,10 +99,12 @@ public class DataServiceImpl  implements DataService {
      */
     @Override
     public List<SimpleMachineDevice> selectMachineDeviceIds() {
-
-        List<SimpleMachineDevice> longs=machineDeviceMapper.selectMachineDeviceIds();
-
-        return longs;
+        log.info("开始查询 mysql ");
+        System.out.println("开始查询 mysql");
+        List<SimpleMachineDevice> simpleMachineDeviceList=machineDeviceMapper.selectMachineDeviceIds();
+        log.info("结束查询 mysql: 共有数据 {} 条"+simpleMachineDeviceList.size());
+        System.out.println("结束查询 mysql: 共有数据 +"+simpleMachineDeviceList.size()+"+ 条");
+        return simpleMachineDeviceList;
     }
     /**
      *
@@ -105,9 +113,14 @@ public class DataServiceImpl  implements DataService {
      *
      */
     @Override
+    @Async("downLoadFileTaskExecutor")
     public List<DeviceDataPoint> selectCassandraDeviceMinioDataInfo(DeviceDataPointCassandraParam deviceDataPointCassandraParam) {
+        long beginTime= System.currentTimeMillis();
+        log.info("开始查询 cassandra:  {} ",deviceDataPointCassandraParam.toString());
+        List<DeviceDataPoint> deviceDataPointList=deviceDataPointRepositoryImpl.list(deviceDataPointCassandraParam);
+        log.info("结束查询 cassandra:  {}  有记录 {} 条  耗时 ",deviceDataPointCassandraParam.toString(),deviceDataPointList.size(),System.currentTimeMillis()-beginTime);
 
-        return deviceDataPointRepositoryImpl.list(deviceDataPointCassandraParam);
+        return deviceDataPointList;
     }
 
 }
