@@ -9,10 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * @author huzj
@@ -49,7 +46,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
                 in = minioClient.getObject(bucketName,fileName);
                 //文件存储
                 BufferedOutputStream out=null;
-                out=new BufferedOutputStream(new FileOutputStream(saveFileLocation+fileName));
+                out=new BufferedOutputStream(new FileOutputStream(saveFileLocation.concat(File.separator).concat(fileName)));
                 int len=-1;
                 byte[] b=new byte[1024];
                 while((len=in.read(b))!=-1){
