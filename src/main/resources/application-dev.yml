@@ -1,17 +1,16 @@
 # 高版本
-#minio:
-#  endpoint: http://47.118.51.155:9000
-#  accessKey: miniorootuser
-#  secretKey: miniorootpassword
-#  bucketName: images
+minio:
+  endpoint: http://47.118.51.155:9000
+  accessKey: miniorootuser
+  secretKey: miniorootpassword
+  bucketName: images
 
 # 低版本
 fileserver:
   file-expired-time: 604800000
   minio:
-    access-key: Fatri2019
-    secret-key: Fatri2019
-    region: cn-south-rack-1
+    access-key: miniorootuser
+    secret-key: miniorootpassword
     server:
       host: 47.118.51.155
       secure: false
