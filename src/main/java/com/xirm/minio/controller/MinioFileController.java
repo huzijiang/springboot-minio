@@ -63,7 +63,7 @@ public class MinioFileController {
     @GetMapping("/download/{filename}")
     public void download(@PathVariable String filename, HttpServletResponse response){
         Gson gson=new Gson();
-        sdfall.setTimeZone(TimeZone.getTimeZone("UTC"));
+        sdfall.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
 
         //从月初开始
 
@@ -76,14 +76,16 @@ public class MinioFileController {
         SimpleMachineDevice asimpleMachineDevice=new SimpleMachineDevice();
         asimpleMachineDevice.setDeviceId(616669233266429957L);
             asimpleMachineDevice.setProjectName("龙源集团");
-            asimpleMachineDevice.setFactoryName("区域名字");
-            asimpleMachineDevice.setWorkshopName("风场名字");
+            asimpleMachineDevice.setFactoryName("区域1");
+            asimpleMachineDevice.setWorkshopName("风场1");
             asimpleMachineDevice.setFullDeviceName("A-0-01-10");
         simpleMachineDevices.add(asimpleMachineDevice);
 
 
-        Calendar now = Calendar.getInstance();;
+        Calendar now = Calendar.getInstance();
+
         while (calendar.before(now)){
+            String fileRootPath=sdfroot.format(calendar.getTime());
             for (SimpleMachineDevice simpleMachineDevice:simpleMachineDevices) {
 
                 //查询 cassandra 原始数据文件 文件名称
@@ -105,7 +107,7 @@ public class MinioFileController {
                     DeviceDataPointMetaData deviceDataPointMetaData=gson.fromJson(deviceDataPoint.getMetadata().replace("\"\"","\""),DeviceDataPointMetaData.class);
                     System.out.println(deviceDataPointMetaData.toString());
                     //直接到文件
-                    File fileFactoryName=new File(rootpath.concat(simpleMachineDevice.getProjectName()).concat(sdfroot.format(calendar.getTime()))
+                    File fileFactoryName=new File(rootpath.concat(simpleMachineDevice.getProjectName()).concat(fileRootPath)
                             .concat(File.separator)
                             .concat(simpleMachineDevice.getFactoryName())
                             .concat(File.separator)

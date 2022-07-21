@@ -32,13 +32,13 @@ public class FileDownloadServiceImpl implements FileDownloadService {
      *
      * @param bucketName
      * @param fileName
-     * @param saveFileName
+     * @param saveFileLocation
      */
     @Override
     @Async("downLoadFileTaskExecutor")
-    public void download(String bucketName,String fileName,String saveFileName) {
-        log.info("开始下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,fileName,saveFileName);
-        System.out.println("开始下载文件-bucketName: "+bucketName+" -fileName: "+fileName+" -saveFileName: "+saveFileName+"");
+    public void download(String bucketName,String fileName,String saveFileLocation) {
+        log.info("开始下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,fileName,saveFileLocation);
+        System.out.println("开始下载文件-bucketName: "+bucketName+" -saveFileLocation: "+saveFileLocation+""+" -fileName: "+fileName);
         InputStream in = null;
         try {
             //查询 获取对象信息
@@ -50,7 +50,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
 
                 //文件存储
                 BufferedOutputStream out=null;
-                out=new BufferedOutputStream(new FileOutputStream(saveFileName));
+                out=new BufferedOutputStream(new FileOutputStream(saveFileLocation+fileName));
                 int len=-1;
                 byte[] b=new byte[1024];
                 while((len=in.read(b))!=-1){
@@ -73,8 +73,8 @@ public class FileDownloadServiceImpl implements FileDownloadService {
                 }
             }
         }
-        log.info("结束下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,fileName,saveFileName);
-        System.out.println("结束下载文件-bucketName: "+bucketName+" -fileName: "+fileName+" -saveFileName: "+saveFileName+"");
+        log.info("结束下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,fileName,saveFileLocation);
+        System.out.println("结束下载文件-bucketName: "+bucketName+" -saveFileName: "+saveFileLocation+""+" -fileName: "+fileName);
     }
 
 }
