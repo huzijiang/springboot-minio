@@ -6,12 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 低版本5.0.6
  * @author huzj
  * @version 1.0
  * @date 2022/7/3 13:24
  */
 @Configuration
-public class MinioConfig {
+public class MinioConfigL {
 
 //    @Value("${fileserver.minio.server.host}")
 //    private String host;
