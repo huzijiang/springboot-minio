@@ -113,7 +113,6 @@ public class DataServiceImpl  implements DataService {
      *
      */
     @Override
-    @Async("downLoadFileTaskExecutor")
     public List<DeviceDataPoint> selectCassandraDeviceMinioDataInfo(DeviceDataPointCassandraParam deviceDataPointCassandraParam) {
         long beginTime= System.currentTimeMillis();
         log.info("开始查询 cassandra:  {} ",deviceDataPointCassandraParam.toString());

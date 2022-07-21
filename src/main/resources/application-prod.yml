@@ -35,3 +35,4 @@ spring:
       password: cassandra
       fetch-size: 100
       port: 9042
+      local-datacenter: datacenter1
