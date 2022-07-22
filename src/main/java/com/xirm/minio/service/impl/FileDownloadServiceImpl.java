@@ -28,25 +28,25 @@ public class FileDownloadServiceImpl implements FileDownloadService {
      * minio  文件下载
      *
      * @param bucketName
-     * @param fileName
-     * @param saveFileLocation
+     * @param minioFileName
+     * @param saveFileName
      */
     @Override
     @Async("downLoadFileTaskExecutor")
-    public void download(String bucketName,String fileName,String saveFileLocation) {
-        log.info("开始下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,fileName,saveFileLocation);
-        System.out.println("开始下载文件-bucketName: "+bucketName+" -saveFileLocation: "+saveFileLocation+""+" -fileName: "+fileName);
+    public void download(String bucketName,String minioFileName,String saveFileName) {
+        log.info("开始下载文件-bucketName: {} -minioFileName: {} -saveFileName: {}",bucketName,minioFileName,saveFileName);
+        System.out.println("开始下载文件-bucketName: "+bucketName+" -saveFileName: "+saveFileName+""+" -fileName: "+saveFileName);
         InputStream in = null;
         try {
             //查询 获取对象信息
-            ObjectStat stat = minioClient.statObject(bucketName,fileName);
+            ObjectStat stat = minioClient.statObject(bucketName,minioFileName);
 
             if(stat.length()>0){
                 //文件下载
-                in = minioClient.getObject(bucketName,fileName);
+                in = minioClient.getObject(bucketName,minioFileName);
                 //文件存储
                 BufferedOutputStream out=null;
-                out=new BufferedOutputStream(new FileOutputStream(saveFileLocation.concat(File.separator).concat(fileName)));
+                out=new BufferedOutputStream(new FileOutputStream(saveFileName));
                 int len=-1;
                 byte[] b=new byte[1024];
                 while((len=in.read(b))!=-1){
@@ -55,7 +55,7 @@ public class FileDownloadServiceImpl implements FileDownloadService {
                 in.close();
                 out.close();
             }else {
-                log.info("bucketName:{} fileName: {} 文件为空。",bucketName,fileName);
+                log.info("bucketName:{} fileName: {} 文件为空。",bucketName,minioFileName);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -69,8 +69,8 @@ public class FileDownloadServiceImpl implements FileDownloadService {
                 }
             }
         }
-        log.info("结束下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,fileName,saveFileLocation);
-        System.out.println("结束下载文件-bucketName: "+bucketName+" -saveFileName: "+saveFileLocation+""+" -fileName: "+fileName);
+        log.info("结束下载文件-bucketName: {} -fileName: {} -saveFileName: {}",bucketName,minioFileName,saveFileName);
+        System.out.println("结束下载文件-bucketName: "+bucketName+" -minioFileName: "+minioFileName+""+" -saveFileName: "+saveFileName);
     }
 
 }

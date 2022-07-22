@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xirm.minio.mapper.DeviceMinioOriginalDataLogMapper">
+  <resultMap id="BaseResultMap" type="com.xirm.minio.domain.bean.DeviceMinioOriginalDataLog">
+    <!--@mbg.generated-->
+    <!--@Table device_minio_original_data_log-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="device_id" jdbcType="BIGINT" property="deviceId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="reported_at" jdbcType="TIMESTAMP" property="reportedAt" />
+    <result column="identifier" jdbcType="VARCHAR" property="identifier" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, device_id, created_at, reported_at, identifier, file_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select
+    <include refid="Base_Column_List" />
+    from device_minio_original_data_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from device_minio_original_data_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.xirm.minio.domain.bean.DeviceMinioOriginalDataLog" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_minio_original_data_log (device_id, created_at, reported_at,
+      identifier, file_name)
+    values (#{deviceId,jdbcType=BIGINT}, #{createdAt,jdbcType=TIMESTAMP}, #{reportedAt,jdbcType=TIMESTAMP},
+      #{identifier,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.xirm.minio.domain.bean.DeviceMinioOriginalDataLog" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into device_minio_original_data_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="deviceId != null">
+        device_id,
+      </if>
+      <if test="createdAt != null">
+        created_at,
+      </if>
+      <if test="reportedAt != null">
+        reported_at,
+      </if>
+      <if test="identifier != null">
+        identifier,
+      </if>
+      <if test="fileName != null">
+        file_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="deviceId != null">
+        #{deviceId,jdbcType=BIGINT},
+      </if>
+      <if test="createdAt != null">
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reportedAt != null">
+        #{reportedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="identifier != null">
+        #{identifier,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.xirm.minio.domain.bean.DeviceMinioOriginalDataLog">
+    <!--@mbg.generated-->
+    update device_minio_original_data_log
+    <set>
+      <if test="deviceId != null">
+        device_id = #{deviceId,jdbcType=BIGINT},
+      </if>
+      <if test="createdAt != null">
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reportedAt != null">
+        reported_at = #{reportedAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="identifier != null">
+        identifier = #{identifier,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.xirm.minio.domain.bean.DeviceMinioOriginalDataLog">
+    <!--@mbg.generated-->
+    update device_minio_original_data_log
+    set device_id = #{deviceId,jdbcType=BIGINT},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      reported_at = #{reportedAt,jdbcType=TIMESTAMP},
+      identifier = #{identifier,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectDeviceMinioOriginalDataLogInfoByDate" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from device_minio_original_data_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+</mapper>

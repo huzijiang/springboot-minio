@@ -2,13 +2,18 @@ package com.xirm.minio.service.impl;
 
 import com.xirm.minio.cassandra.DeviceDataPointRepository;
 import com.xirm.minio.domain.bean.DeviceDataPointCassandraParam;
+import com.xirm.minio.domain.bean.DeviceMinioOriginalDataLog;
 import com.xirm.minio.domain.bean.SimpleMachineDevice;
 import com.xirm.minio.domain.device.DeviceDataPoint;
+import com.xirm.minio.mapper.DeviceMinioOriginalDataLogMapper;
 import com.xirm.minio.mapper.MachineDeviceMapper;
 import com.xirm.minio.service.DataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +27,9 @@ public class DataServiceImpl  implements DataService {
 
     @Autowired
     private MachineDeviceMapper machineDeviceMapper;
+
+    @Autowired
+    private DeviceMinioOriginalDataLogMapper deviceMinioOriginalDataLogMapper;
 
     @Autowired
     private DeviceDataPointRepository deviceDataPointRepositoryImpl;
@@ -48,12 +56,40 @@ public class DataServiceImpl  implements DataService {
      */
     @Override
     public List<DeviceDataPoint> selectCassandraDeviceMinioDataInfo(DeviceDataPointCassandraParam deviceDataPointCassandraParam) {
+        SimpleDateFormat sdfall= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
         long beginTime= System.currentTimeMillis();
+        System.out.println(sdfall.format(deviceDataPointCassandraParam.getBeginTime()));
+        System.out.println(sdfall.format(deviceDataPointCassandraParam.getEndTime()));
         log.info("开始查询 cassandra:  {} ",deviceDataPointCassandraParam.toString());
         List<DeviceDataPoint> deviceDataPointList=deviceDataPointRepositoryImpl.list(deviceDataPointCassandraParam);
         log.info("结束查询 cassandra:  {}  有记录 {} 条  耗时 ",deviceDataPointCassandraParam.toString(),deviceDataPointList.size(),System.currentTimeMillis()-beginTime);
 
         return deviceDataPointList;
+    }
+
+    /**
+     * 一次性处理
+     * 查询传感器 在cassandra 中上传你的原始数据信息 转储到 mysql中
+     *
+     * @param deviceMinioOriginalDataLog
+     * @return
+     */
+    @Override
+    public void saveCassandraDeviceMinioDataInfoToMysql(DeviceMinioOriginalDataLog  deviceMinioOriginalDataLog) {
+        deviceMinioOriginalDataLogMapper.insert(deviceMinioOriginalDataLog);
+    }
+
+    /**
+     * 从数据库中 下载 minio 文件同步日志
+     *
+     * @param deviceMinioOriginalDataLog
+     * @return
+     */
+    @Override
+    public List<DeviceMinioOriginalDataLog> selectDeviceMinioOriginalDataLogInfoByDate(DeviceMinioOriginalDataLog deviceMinioOriginalDataLog) {
+        deviceMinioOriginalDataLogMapper.selectDeviceMinioOriginalDataLogInfoByDate(deviceMinioOriginalDataLog);
+        return null;
     }
 
 }

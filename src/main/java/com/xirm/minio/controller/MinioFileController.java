@@ -3,12 +3,15 @@ package com.xirm.minio.controller;
 import com.google.gson.Gson;
 import com.xirm.minio.domain.bean.DeviceDataPointCassandraParam;
 import com.xirm.minio.domain.bean.DeviceDataPointMetaData;
+import com.xirm.minio.domain.bean.DeviceMinioOriginalDataLog;
 import com.xirm.minio.domain.bean.SimpleMachineDevice;
 import com.xirm.minio.domain.device.DeviceDataPoint;
+import com.xirm.minio.mapper.DeviceMinioOriginalDataLogMapper;
 import com.xirm.minio.service.DataService;
 import com.xirm.minio.service.FileDownloadService;
 import com.xirm.minio.util.ResponseData;
 import com.xirm.minio.util.ResponseDataUtil;
+import com.xirm.minio.util.UniqueIdUtil;
 import io.minio.*;
 import io.minio.http.Method;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -54,16 +57,16 @@ public class MinioFileController {
     SimpleDateFormat sdfall= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
 
-    public static String rootpath="/Users/huzj/Desktop/test";
+    public static String rootpath="/Users/huzj/Desktop/";
     /**
      * 下载文件， 从本月1 日 算起 开始下载
      * @param filename
      * @param response
      */
-    @GetMapping("/download/{filename}")
-    public void download(@PathVariable String filename, HttpServletResponse response){
+    @GetMapping("/downloadByCassandra")
+    public void downloadByCassandra(@PathVariable String filename, HttpServletResponse response){
         Gson gson=new Gson();
-        sdfall.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        sdfall.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         //从月初开始
 
@@ -72,15 +75,14 @@ public class MinioFileController {
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
 
         //查询数据待下载
-        List<SimpleMachineDevice> simpleMachineDevices=new ArrayList<>();//dataService.selectMachineDeviceIds();
+        List<SimpleMachineDevice> simpleMachineDevices=dataService.selectMachineDeviceIds();
         SimpleMachineDevice asimpleMachineDevice=new SimpleMachineDevice();
         asimpleMachineDevice.setDeviceId(616669233266429957L);
             asimpleMachineDevice.setProjectName("龙源集团");
             asimpleMachineDevice.setFactoryName("区域1");
             asimpleMachineDevice.setWorkshopName("风场1");
-            asimpleMachineDevice.setFullDeviceName("A-0-01-10");
+            asimpleMachineDevice.setFullDeviceName("福建区域_15_官庄风场_604838380913168384_F11_659048638489169920_齿轮箱内齿圈水平3H_659048267732094976_51200__659048267732094976");
         simpleMachineDevices.add(asimpleMachineDevice);
-
 
         Calendar now = Calendar.getInstance();
 
@@ -92,6 +94,7 @@ public class MinioFileController {
                 DeviceDataPointCassandraParam deviceDataPointCassandraParam=new DeviceDataPointCassandraParam();
                 deviceDataPointCassandraParam.setDeviceId(new BigInteger(simpleMachineDevice.getDeviceId().toString()));
                 deviceDataPointCassandraParam.setIdentifier("originalData");
+
                 deviceDataPointCassandraParam.setBeginTime(calendar.getTime());
 
                 //计算截止时间后 并恢复
@@ -111,9 +114,7 @@ public class MinioFileController {
                             .concat(File.separator)
                             .concat(simpleMachineDevice.getFactoryName())
                             .concat(File.separator)
-                            .concat(simpleMachineDevice.getWorkshopName())
-                            .concat(File.separator)
-                            .concat(simpleMachineDevice.getFullDeviceName()));
+                            .concat(simpleMachineDevice.getWorkshopName()));
 
                     if(fileFactoryName.exists()){
                         continue;
@@ -123,19 +124,149 @@ public class MinioFileController {
 
                     fileDownloadService.download(deviceDataPointMetaData.getBucketName(),
                             deviceDataPointMetaData.getObjectName(),
-                            fileFactoryName.getPath());
+                            fileFactoryName.getPath().concat(File.separator).concat(simpleMachineDevice.getFullDeviceName()));
                 }
 
             }
         }
-
     }
+    /**
+     * 下载文件， 从本月1 日 算起 开始下载  从mysql 获取文件凭据
+     * @param filename
+     * @param response
+     */
+    @GetMapping("/downloadByMysql")
+    public void downloadByMysql(@PathVariable String filename, HttpServletResponse response){
+        Gson gson=new Gson();
+        sdfall.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        //从月初开始
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY), calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+
+        //查询数据待下载
+        List<SimpleMachineDevice> simpleMachineDevices=dataService.selectMachineDeviceIds();
+
+        //查询mysql文件同步目录  通过日期
+        DeviceMinioOriginalDataLog deviceMinioOriginalDataLog=new DeviceMinioOriginalDataLog();
+        deviceMinioOriginalDataLog.setCreatedAt(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR,1);
+        deviceMinioOriginalDataLog.setReportedAt(calendar.getTime());
+
+        List<DeviceMinioOriginalDataLog> deviceMinioOriginalDataLogs=dataService.selectDeviceMinioOriginalDataLogInfoByDate(deviceMinioOriginalDataLog);
+
+
+        Calendar now = Calendar.getInstance();
+
+        while (calendar.before(now)){
+            String fileRootPath=sdfroot.format(calendar.getTime());
+            for (SimpleMachineDevice simpleMachineDevice:simpleMachineDevices) {
+
+                //查询 cassandra 原始数据文件 文件名称
+                DeviceDataPointCassandraParam deviceDataPointCassandraParam=new DeviceDataPointCassandraParam();
+                deviceDataPointCassandraParam.setDeviceId(new BigInteger(simpleMachineDevice.getDeviceId().toString()));
+                deviceDataPointCassandraParam.setIdentifier("originalData");
+
+                deviceDataPointCassandraParam.setBeginTime(calendar.getTime());
+
+                //计算截止时间后 并恢复
+                calendar.add(Calendar.DAY_OF_YEAR,1);
+                deviceDataPointCassandraParam.setEndTime(calendar.getTime());
+
+                List<DeviceDataPoint> deviceDataPointList=dataService.selectCassandraDeviceMinioDataInfo(deviceDataPointCassandraParam);
+
+                System.out.println(deviceDataPointList);
+
+                //解析cassandra 信息
+                for (DeviceDataPoint deviceDataPoint:deviceDataPointList) {
+                    DeviceDataPointMetaData deviceDataPointMetaData=gson.fromJson(deviceDataPoint.getMetadata().replace("\"\"","\""),DeviceDataPointMetaData.class);
+                    System.out.println(deviceDataPointMetaData.toString());
+                    //直接到文件
+                    File fileFactoryName=new File(rootpath.concat(simpleMachineDevice.getProjectName()).concat(fileRootPath)
+                            .concat(File.separator)
+                            .concat(simpleMachineDevice.getFactoryName())
+                            .concat(File.separator)
+                            .concat(simpleMachineDevice.getWorkshopName()));
+
+                    if(fileFactoryName.exists()){
+                        continue;
+                    }else {
+                        fileFactoryName.mkdirs();
+                    }
+
+                    fileDownloadService.download(deviceDataPointMetaData.getBucketName(),
+                            deviceDataPointMetaData.getObjectName(),
+                            fileFactoryName.getPath().concat(File.separator).concat(simpleMachineDevice.getFullDeviceName()));
+                }
+
+            }
+        }
+    }
+
+
+    /**
+     * 从cassandra 中  去除device 原始数据的存储位置。
+     * @param
+     * @param response
+     */
+    @GetMapping("/minioFileDescMoveToMysql")
+    public void minioFileDescMove(HttpServletResponse response){
+        Gson gson=new Gson();
+        sdfall.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        //从月初开始
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONDAY), calendar.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+
+        //查询数据待下载
+        List<SimpleMachineDevice> simpleMachineDevices=dataService.selectMachineDeviceIds();
+
+        Calendar now = Calendar.getInstance();
+
+        while (calendar.before(now)){
+            String fileRootPath=sdfroot.format(calendar.getTime());
+            for (SimpleMachineDevice simpleMachineDevice:simpleMachineDevices) {
+
+                //查询 cassandra 原始数据文件 文件名称
+                DeviceDataPointCassandraParam deviceDataPointCassandraParam=new DeviceDataPointCassandraParam();
+                deviceDataPointCassandraParam.setDeviceId(new BigInteger(simpleMachineDevice.getDeviceId().toString()));
+                deviceDataPointCassandraParam.setIdentifier("originalData");
+
+                deviceDataPointCassandraParam.setBeginTime(calendar.getTime());
+                calendar.add(Calendar.DAY_OF_YEAR,1);
+                deviceDataPointCassandraParam.setEndTime(calendar.getTime());
+
+                List<DeviceDataPoint> deviceDataPointList=dataService.selectCassandraDeviceMinioDataInfo(deviceDataPointCassandraParam);
+
+                System.out.println(deviceDataPointList);
+
+                //解析cassandra 信息
+                for (DeviceDataPoint deviceDataPoint:deviceDataPointList) {
+                    DeviceDataPointMetaData deviceDataPointMetaData=gson.fromJson(deviceDataPoint.getMetadata().replace("\"\"","\""),DeviceDataPointMetaData.class);
+                    System.out.println(deviceDataPointMetaData.toString());
+                    //存储到mysql
+                    DeviceMinioOriginalDataLog deviceMinioOriginalDataLog=new DeviceMinioOriginalDataLog();
+                    deviceMinioOriginalDataLog.setId(UniqueIdUtil.uniqId());
+                    deviceMinioOriginalDataLog.setDeviceId(simpleMachineDevice.getDeviceId());
+                    deviceMinioOriginalDataLog.setFileName(deviceDataPointMetaData.getObjectName());
+                    deviceMinioOriginalDataLog.setIdentifier(deviceDataPoint.getIdentifier());
+                    deviceMinioOriginalDataLog.setCreatedAt(deviceDataPoint.getCreatedAt());
+                    deviceMinioOriginalDataLog.setReportedAt(deviceDataPoint.getReportedAt());
+                    dataService.saveCassandraDeviceMinioDataInfoToMysql(deviceMinioOriginalDataLog);
+                }
+            }
+        }
+    }
+
 
     /**
      * 监控线程池状态
      * @return
      */
-    @GetMapping("/asyncExceutorInfo")
+    @GetMapping("/asyncExecutorInfo")
     public Map getThreadInfo() {
         Map map =new HashMap();
         Object[] myThread = {personInfoTaskExecutor};
